@@ -6,6 +6,10 @@ import nodriver
 
 from searcher import find_sku_position
 
+MSG_SEARCHING = "\nИщем на Ozon: \"{query}\", артикул: {sku}\n"
+MSG_RESULT = "\nРезультат:\n"
+MSG_SAVED = "\nСохранено в {path}"
+
 if sys.platform == "win32":
     sys.stdout.reconfigure(encoding="utf-8")
     sys.stderr.reconfigure(encoding="utf-8")
@@ -40,7 +44,7 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    print(f"\nИщем на Ozon: \"{args.query}\", артикул: {args.sku}\n")
+    print(MSG_SEARCHING.format(query=args.query, sku=args.sku))
 
     result = nodriver.loop().run_until_complete(
         find_sku_position(
@@ -52,13 +56,13 @@ def main() -> None:
     )
 
     output = json.dumps(result, ensure_ascii=False, indent=2)
-    print("\nРезультат:\n")
+    print(MSG_RESULT)
     print(output)
 
     if args.output:
         with open(args.output, "w", encoding="utf-8") as f:
             f.write(output)
-        print(f"\nСохранено в {args.output}")
+        print(MSG_SAVED.format(path=args.output))
 
 
 if __name__ == "__main__":
