@@ -60,8 +60,16 @@ def main() -> None:
     print(output)
 
     if args.output:
+        try:
+            with open(args.output, "r", encoding="utf-8") as f:
+                history = json.load(f)
+            if not isinstance(history, list):
+                history = [history]
+        except (FileNotFoundError, json.JSONDecodeError):
+            history = []
+        history.append(result)
         with open(args.output, "w", encoding="utf-8") as f:
-            f.write(output)
+            json.dump(history, f, ensure_ascii=False, indent=2)
         print(MSG_SAVED.format(path=args.output))
 
 
