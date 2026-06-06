@@ -164,7 +164,7 @@ async def extract_skus_from_tab(tab) -> list[str]:
 async def find_sku_position(
     query: str,
     sku: str,
-    headless: bool = False,
+    headless: bool = True,
     debug_screenshot: bool = False,
 ) -> dict:
     """
@@ -295,12 +295,10 @@ def main() -> None:
         help="Артикул товара на Ozon, например: 540109988",
     )
     parser.add_argument(
-        "--headless",
+        "--show-browser",
         action="store_true",
-        help=(
-            "Запустить браузер в фоне без окна. "
-            "По умолчанию окно видно — так лучше обходится защита Ozon"
-        ),
+        dest="show_browser",
+        help="Показать окно браузера (по умолчанию работает в фоне без окна)",
     )
     parser.add_argument(
         "--debug",
@@ -320,7 +318,7 @@ def main() -> None:
         find_sku_position(
             query=args.query,
             sku=args.sku,
-            headless=args.headless,
+            headless=not args.show_browser,
             debug_screenshot=args.debug,
         )
     )
