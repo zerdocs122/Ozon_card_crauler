@@ -38,6 +38,8 @@ async def _search_pages(
     Возвращает (position, page, total_checked).
     """
     total_checked = 0
+    found_position = None
+    found_page = None
 
     for page_num in range(1, MAX_PAGES + 1):
         if total_checked >= MAX_RESULTS:
@@ -80,13 +82,14 @@ async def _search_pages(
             if total_checked >= MAX_RESULTS:
                 break
             total_checked += 1
-            if product_sku == sku:
-                print(f"  ★ Артикул {sku} найден на позиции {total_checked} (страница {page_num})")
-                return total_checked, page_num, total_checked
+            if product_sku == sku and found_position is None:
+                found_position = total_checked
+                found_page = page_num
+                print(f"  ★ Артикул {sku} найден на позиции {found_position} (страница {page_num})")
 
         await random_delay()
 
-    return None, None, total_checked
+    return found_position, found_page, total_checked
 
 
 async def find_sku_position(
